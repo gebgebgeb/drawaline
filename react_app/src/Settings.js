@@ -27,11 +27,10 @@ class Settings extends Component{
 					</ButtonGroup>
 				</div>
 				<div>
-					<h5>Hint level</h5>
+					<h5>Show Template?</h5>
 					<ButtonGroup>
-						<Button color="primary" onClick={() => this.props.setHintLevel(1)} active={this.props.hintLevel >= 1}>1</Button>
-						<Button color="primary" onClick={() => this.props.setHintLevel(2)} active={this.props.hintLevel >= 2}>2</Button>
-						<Button color="primary" onClick={() => this.props.setHintLevel(3)} active={this.props.hintLevel >= 3}>3</Button>
+						<Button color="primary" onClick={() => this.props.setShowTemplate(true)} active={this.props.showTemplate}>Yes</Button>
+						<Button color="primary" onClick={() => this.props.setShowTemplate(false)} active={!this.props.showTemplate}>No</Button>
 					</ButtonGroup>
 				</div>
 

@@ -1,62 +1,153 @@
 import React from 'react';
 //import axios from 'axios';
 
+function distance(pos1, pos2){
+	return Math.sqrt((pos1.x - pos2.x)**2 + (pos1.y - pos2.y)**2);
+}
+
+function getMousePos(canvas, evt) {
+	let rect = canvas.getBoundingClientRect();
+	return {
+		x: evt.clientX - rect.left
+		, y: evt.clientY - rect.top
+	};
+}
+
 class Canvas extends React.Component{
 	constructor(props){
 		super(props)
+		this.state = {
+			'guideImage': new Image()
+			, 'templateImage': new Image()
+			, 'mouseDown': false
+			, 'lastMousePos': null
+			, 'firstStroke': true
+			, 'currentDirname': null
+			, 'currentShowTemplate': null
+			, 'currentOneStroke': null
+		}
+		
+		this.mouseDownListener = this.mouseDownListener.bind(this)
+		this.mouseUpListener = this.mouseUpListener.bind(this)
+		this.mouseMoveListener = this.mouseMoveListener.bind(this)
+		this.evaluateListener = this.evaluateListener.bind(this)
 	}
+	componentDidMount(){
+		let c = document.getElementById('drawingArea');
+		c.addEventListener('mousedown', this.mouseDownListener)
+		c.addEventListener('mouseup', this.mouseUpListener)
+		c.addEventListener('mousemove', this.mouseMoveListener)
+		c.addEventListener('evaluate', this.evaluateListener)
+	}
+
 	componentDidUpdate(){
 		if(this.props.template === null){
 			return
 		}
-		initializeShape(this.props.template.dirname
-			, this.props.oneStroke
-			, this.props.hintLevel
-		);
-	}
-	render(){
-		return(
-			<div>
-				<canvas 
-					id='drawingArea' 
-					width='500' height='500' 
-				/>
-			</div>
-		)
-	}
-}
+		let dataDir = this.props.template.dirname
 
-class Shape{
-	constructor(dataDir){
-		this.dataDir = dataDir
+		if(this.state.currentDirname === dataDir 
+			&& this.state.currentShowTemplate === this.props.showTemplate){
+			return
+		}
 
-		this.templateImage = new Image();
-		this.guideImage = new Image();
-		this.templateImage.src =  '/templates/' + dataDir + '/template.png';
-		this.guideImage.src =  '/templates/' + dataDir + '/guide.png';
+		let newState = Object.assign({}, this.state)
+		if(this.state.currentOneStroke !== this.props.oneStroke){
+			newState.firstStroke = true
+		}
+		newState.templateImage.src =  '/templates/' + dataDir + '/template.png';
+		newState.guideImage.src =  '/templates/' + dataDir + '/guide.png';
 
-		this.canvas = document.getElementById('drawingArea');
-		this.ctx = this.canvas.getContext('2d');
+		newState.currentDirname = dataDir
+		newState.currentShowTemplate = this.props.showTemplate
+		newState.currentOneStroke = this.props.oneStroke
+
+		const guideImageLoaded = new Promise(function(resolve, reject){
+			newState.guideImage.onload = ()=>resolve()
+		});
+		const templateImageLoaded = new Promise(function(resolve, reject){
+			newState.templateImage.onload = ()=>resolve()
+		});
+		Promise.all([guideImageLoaded, templateImageLoaded]).then(()=>{
+			this.drawGuide()
+			this.setState(newState)
+		})
 	}
 
 	drawGuide(){
-		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-		this.ctx.drawImage(this.guideImage, 0, 0);
+		let c = document.getElementById('drawingArea')
+		let ctx = c.getContext('2d')
+		ctx.clearRect(0, 0, c.width, c.height);
+		ctx.drawImage(this.state.guideImage, 0, 0);
+		if(this.props.showTemplate){
+			ctx.drawImage(this.state.templateImage, 0, 0);
+		}
 	}
+
 	drawTemplate(){
-		this.ctx.drawImage(this.templateImage, 0, 0);
+		let ctx = document.getElementById('drawingArea').getContext('2d')
+		ctx.drawImage(this.state.templateImage, 0, 0);
+	}
+
+	mouseDownListener(evt){
+		let c = document.getElementById('drawingArea')
+		this.mouseDown = true;
+		if(this.props.oneStroke || this.state.firstStroke){
+			this.drawGuide();
+		}
+		let newState = Object.assign({}, this.state)
+		newState.firstStroke = false
+		newState.lastMousePos = getMousePos(c, evt);
+		this.setState(newState)
+	}
+
+	mouseUpListener(evt){
+		this.mouseDown = false;  
+		if(this.props.oneStroke){
+			let newState = Object.assign({}, this.state)
+			newState.firstStroke = true
+			console.log(this.score());
+			this.drawTemplate();
+		}
+	}
+	mouseMoveListener(evt){
+		if (this.mouseDown) {
+			let c = document.getElementById('drawingArea');
+			let ctx = c.getContext('2d');
+			const mousePos = getMousePos(c, evt);
+			ctx.beginPath();
+			ctx.moveTo(this.state.lastMousePos.x, this.state.lastMousePos.y);
+			ctx.lineTo(mousePos.x, mousePos.y);
+			ctx.lineWidth = 2;
+			ctx.strokeStyle = '#009900';
+			ctx.stroke();
+
+			let newState = Object.assign({}, this.state)
+			newState.lastMousePos = mousePos;
+			this.setState(newState)
+		}
+	}
+	evaluateListener(evt){
+		let newState = Object.assign({}, this.state)
+		newState.firstStroke = true
+		this.setState(newState)
+		console.log(this.score());
+		this.drawTemplate();
 	}
 
 	score(){
+		let canvas = document.getElementById('drawingArea')
+		let ctx = canvas.getContext('2d')
+
 		// create a hidden canvas to draw the template image on
 		let templateCanvas = document.createElement("canvas");
-		templateCanvas.width = this.templateImage.width;
-		templateCanvas.height = this.templateImage.height;
+		templateCanvas.width = this.state.templateImage.width;
+		templateCanvas.height = this.state.templateImage.height;
 		let templateCtx = templateCanvas.getContext("2d");
-		templateCtx.drawImage(this.templateImage, 0, 0);
+		templateCtx.drawImage(this.state.templateImage, 0, 0);
 
 		let templateImageData = templateCtx.getImageData(0,0,500,500);
-		let imageData = this.ctx.getImageData(0,0,500,500);
+		let imageData = ctx.getImageData(0,0,500,500);
 
 		// get position of template pixels
 		let templatePositions = []
@@ -65,7 +156,6 @@ class Shape{
 				templatePositions.push({'x': (j/4)%500, 'y': Math.floor((j/4)/500)})
 			}
 		}
-		//templateCanvas.style.display = 'none';
 
 		// get position of drawn pixels
 		let drawnPositions = []
@@ -101,87 +191,16 @@ class Shape{
 		}
 		return(tloss/templatePositions.length + dloss/templatePositions.length);
 	}
-}
 
-let down = false;
-let lastMousePos;
-
-function initializeShape(dataDir, oneStroke, hintLevel){
-	// remove old event handlers, if any
-	let old_c = document.getElementById('drawingArea');
-	let c = old_c.cloneNode(true)
-	old_c.parentNode.replaceChild(c, old_c)
-
-	let ctx = c.getContext('2d');
-
-	const shape = new Shape(dataDir); // see res/templates for options
-	let firstStroke = false
-
-	const guideImageLoaded = new Promise(function(resolve, reject){
-		shape.guideImage.onload = function(){
-			resolve();
-		}
-	});
-
-	const templateImageLoaded = new Promise(function(resolve, reject){
-		shape.templateImage.onload = function(){
-			resolve();
-		}
-	});
-
-	Promise.all([guideImageLoaded, templateImageLoaded]).then(function(){
-		shape.drawGuide(ctx);
-
-		c.addEventListener('mousedown', function(evt){
-			down = true;
-			if(oneStroke || firstStroke){
-				ctx.clearRect(0, 0, c.width, c.height);
-				shape.drawGuide(ctx);
-			}
-			lastMousePos = getMousePos(c, evt);
-		})
-		c.addEventListener('mouseup', function(evt){
-			down = false;  
-			if(oneStroke){
-				firstStroke = true
-				console.log(shape.score());
-				shape.drawTemplate(ctx);
-			}
-		});
-		c.addEventListener('mousemove', draw);
-		c.addEventListener('evaluate', function(evt){
-			firstStroke = true
-			console.log(shape.score());
-			shape.drawTemplate(ctx);
-		})
-	})
-	return shape;
-}
-
-function distance(pos1, pos2){
-	return Math.sqrt((pos1.x - pos2.x)**2 + (pos1.y - pos2.y)**2);
-}
-
-function getMousePos(canvas, evt) {
-	let rect = canvas.getBoundingClientRect();
-	return {
-		x: evt.clientX - rect.left
-		, y: evt.clientY - rect.top
-	};
-}
-
-function draw(evt){
-	if (down) {
-		let c = document.getElementById('drawingArea');
-		let ctx = c.getContext('2d');
-		const mousePos = getMousePos(c, evt);
-		ctx.beginPath();
-		ctx.moveTo(lastMousePos.x, lastMousePos.y);
-		ctx.lineTo(mousePos.x, mousePos.y);
-		ctx.lineWidth = 2;
-		ctx.strokeStyle = '#009900';
-		ctx.stroke();
-		lastMousePos = mousePos;
+	render(){
+		return(
+			<div>
+				<canvas 
+					id='drawingArea' 
+					width='500' height='500' 
+				/>
+			</div>
+		)
 	}
 }
 

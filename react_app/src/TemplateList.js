@@ -36,7 +36,7 @@ class TemplateList extends Component{
 				}
 			}
 			for(let group of Object.keys(groups)){
-				groups[group].sort()
+				groups[group].sort((x,y)=>x.title > y.title)
 			}
 			_this.setState({'groups': groups})
 		})

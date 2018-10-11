@@ -2,7 +2,6 @@ const Koa = require('koa')
 const cors = require('@koa/cors')
 const bodyparser = require('koa-bodyparser')
 const path = require('path')
-const staticServe = require('koa-static')
 
 const indexRouter = require('./routers/index')
 
@@ -11,7 +10,6 @@ const app = new Koa()
 app
 .use(cors())
 .use(bodyparser())
-.use(staticServe(__dirname + '/public'))
 .use(indexRouter.routes())
 
 app.listen(9999)

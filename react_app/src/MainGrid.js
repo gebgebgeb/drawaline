@@ -11,12 +11,12 @@ class MainGrid extends React.Component{
 		this.state = {
 			'curTemplate': null
 			, 'oneStroke': true
-			, 'hintLevel': 3
+			, 'showTemplate': false
 			, 'stats': {}
 		}
 		this.setTemplate = this.setTemplate.bind(this)
 		this.setOneStroke = this.setOneStroke.bind(this)
-		this.setHintLevel = this.setHintLevel.bind(this)
+		this.setShowTemplate = this.setShowTemplate.bind(this)
 	}
 	setTemplate(val){
 		let newState = Object.assign({}, this.state)
@@ -28,9 +28,9 @@ class MainGrid extends React.Component{
 		newState['oneStroke'] = val
 		this.setState(newState)
 	}
-	setHintLevel(val){
+	setShowTemplate(val){
 		let newState = Object.assign({}, this.state)
-		newState['hintLevel'] = val
+		newState['showTemplate'] = val
 		this.setState(newState)
 	}
 	render(){
@@ -46,7 +46,7 @@ class MainGrid extends React.Component{
 								<Canvas 
 									template={this.state.curTemplate}
 									oneStroke={this.state.oneStroke}
-									hintLevel={this.state.hintLevel}
+									showTemplate={this.state.showTemplate}
 								/>
 							</Col>
 						</Row>
@@ -59,9 +59,9 @@ class MainGrid extends React.Component{
 							<Col>
 								<Settings
 									oneStroke={this.state.oneStroke}
-									hintLevel={this.state.hintLevel}
+									showTemplate={this.state.showTemplate}
 									setOneStroke={this.setOneStroke}
-									setHintLevel={this.setHintLevel}
+									setShowTemplate={this.setShowTemplate}
 								/>
 							</Col>
 						</Row>

@@ -6,7 +6,7 @@ client = MongoClient('localhost', 27017)
 db = client.drawing_dev
 templates = db.templates
 
-TEMPLATES_DIR = 'public/templates'
+TEMPLATES_DIR = '../react_app/public/templates'
 for template_dirname in os.listdir(TEMPLATES_DIR):
     full_template_dir = os.path.join(TEMPLATES_DIR, template_dirname)
     if os.path.isdir(full_template_dir):
