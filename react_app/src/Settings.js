@@ -6,19 +6,19 @@ class Settings extends Component{
 		super(props)
 		this.state = {'evaluateEvent': new Event('evaluate')}
 	}
-	evaluate(){
-		let canvas = document.getElementById('drawingArea');
-		canvas.dispatchEvent(this.state.evaluateEvent)
-	}
 	render(){
 		return(
       <div>
-				<div>
+				<ButtonGroup>
 					<Button color="primary" disabled={this.props.oneStroke} 
-						onClick={()=>this.evaluate()}
+						onClick={this.props.evaluate}
 					>Evaluate
 					</Button>
-				</div>
+					<Button color="primary" 
+						onClick={this.props.resetCanvas}
+					>Reset
+					</Button>
+				</ButtonGroup>
 				<div>
 					<h5>Auto evaluate after one stroke?</h5>
 					<ButtonGroup>
