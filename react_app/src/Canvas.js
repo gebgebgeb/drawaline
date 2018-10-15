@@ -106,7 +106,7 @@ class Canvas extends React.Component{
 		if(this.props.oneStroke){
 			let newState = Object.assign({}, this.state)
 			newState.firstStroke = true
-			console.log(this.score());
+			this.props.setLastScore(this.score())
 			this.drawTemplate();
 		}
 	}
@@ -131,7 +131,7 @@ class Canvas extends React.Component{
 		let newState = Object.assign({}, this.state)
 		newState.firstStroke = true
 		this.setState(newState)
-		console.log(this.score());
+		this.props.setLastScore(this.score())
 		this.drawTemplate();
 	}
 
