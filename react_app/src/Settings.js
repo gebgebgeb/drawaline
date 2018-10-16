@@ -2,10 +2,6 @@ import React, {Component} from 'react'
 import {Button, ButtonGroup} from 'reactstrap'
 
 class Settings extends Component{
-	constructor(props){
-		super(props)
-		this.state = {'evaluateEvent': new Event('evaluate')}
-	}
 	render(){
 		return(
       <div>
@@ -38,6 +34,5 @@ class Settings extends Component{
 		)
 	}
 }
-
 
 export default Settings;

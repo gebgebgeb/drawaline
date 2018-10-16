@@ -1,8 +1,9 @@
 import React from 'react';
 
-import {Container, Row, Col} from 'reactstrap'
+import {Container, Row, Col, Button} from 'reactstrap'
 import TemplateList from './TemplateList'
 import Settings from './Settings'
+
 
 function distance(pos1, pos2){
 	return Math.sqrt((pos1.x - pos2.x)**2 + (pos1.y - pos2.y)**2);
@@ -37,12 +38,13 @@ class MainGrid extends React.Component{
 		this.setShowTemplate = this.setShowTemplate.bind(this)
 		this.setLastScore = this.setLastScore.bind(this)
 		this.resetCanvas = this.resetCanvas.bind(this)
-
 		this.mouseDownListener = this.mouseDownListener.bind(this)
 		this.mouseUpListener = this.mouseUpListener.bind(this)
 		this.mouseMoveListener = this.mouseMoveListener.bind(this)
 		this.evaluate = this.evaluate.bind(this)
+		this.clearHistory = this.clearHistory.bind(this)
 
+		//window.localStorage.clear()
 		let allScores = JSON.parse(window.localStorage.getItem('allScores'))
 		if(allScores){
 			for(let score of allScores){
@@ -62,7 +64,6 @@ class MainGrid extends React.Component{
 	}
 
 	mouseDownListener(evt){
-		console.log(this.state.firstStroke)
 		let c = document.getElementById('drawingArea')
 		this.mouseDown = true;
 		if(this.state.firstStroke || this.state.oneStroke){
@@ -102,9 +103,10 @@ class MainGrid extends React.Component{
 	evaluate(){
 		let newState = Object.assign({}, this.state)
 		newState.firstStroke = true
-		this.setLastScore(this.score())
-		this.drawTemplate();
-		this.setState(newState)
+		this.setState(newState, ()=>{
+			this.drawTemplate();
+			this.setLastScore(this.score())
+		})
 	}
 
 	setLastScore(val){
@@ -132,29 +134,33 @@ class MainGrid extends React.Component{
 			newState.templateImage.onload = ()=>resolve()
 		});
 		Promise.all([guideImageLoaded, templateImageLoaded]).then(()=>{
-			this.resetCanvas()
-			this.setState(newState)
+			this.setState(newState, this.resetCanvas)
 		})
 	}
 	setOneStroke(val){
 		let newState = Object.assign({}, this.state)
 		newState['oneStroke'] = val
-		this.resetCanvas()
-		this.setState(newState)
+		this.setState(newState, this.resetCanvas)
 	}
 	setShowTemplate(val){
 		let newState = Object.assign({}, this.state)
 		newState['showTemplate'] = val
-		this.resetCanvas()
+		this.setState(newState, this.resetCanvas)
+	}
+	clearHistory(){
+		window.localStorage.setItem('allScores', JSON.stringify([]))
+		let newState = Object.assign({}, this.state)
+		newState.allScores = []
 		this.setState(newState)
 	}
 
 	resetCanvas(){
-		this.clearCanvas()
-		this.drawGuide()
 		let newState = Object.assign({}, this.state)
 		newState.firstStroke = true
-		this.setState(newState)
+		this.setState(newState, ()=>{
+			this.clearCanvas()
+			this.drawGuide()
+		})
 	}
 	clearCanvas(){
 		let c = document.getElementById('drawingArea')
@@ -165,7 +171,7 @@ class MainGrid extends React.Component{
 		let c = document.getElementById('drawingArea')
 		let ctx = c.getContext('2d')
 		ctx.drawImage(this.state.guideImage, 0, 0);
-		if(this.props.showTemplate){
+		if(this.state.showTemplate){
 			this.drawTemplate()
 		}
 	}
@@ -241,10 +247,7 @@ class MainGrid extends React.Component{
 					<Col xs='8'>
 						<Row>
 							<Col>
-								<Canvas 
-									template={this.state.curTemplate}
-									showTemplate={this.state.showTemplate}
-								/>
+								<Canvas />
 							</Col>
 						</Row>
 						<Row>
@@ -270,6 +273,7 @@ class MainGrid extends React.Component{
 							lastScore={this.state.lastScore}
 							allScores={this.state.allScores}
 							curTemplate={this.state.curTemplate}
+							clearHistory={this.clearHistory}
 						/>
 					</Col>
 				</Row>
@@ -297,6 +301,10 @@ function Stats(props){
 	return(
 		<div>
 			<h4>Score: {props.lastScore.toFixed(2)}</h4>
+			<Button color="primary"
+				onClick={props.clearHistory}
+			>Clear History
+			</Button>
 			<h4>Previous scores:</h4>
 			<ul>
 				{previousScores}
@@ -305,7 +313,7 @@ function Stats(props){
 	)
 }
 
-function Canvas(props){
+function Canvas(){
 	return(
 		<div>
 			<canvas 
