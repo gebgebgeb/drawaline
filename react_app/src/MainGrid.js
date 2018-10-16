@@ -33,17 +33,6 @@ class MainGrid extends React.Component{
 			, 'allScores': []
 		}
 
-		this.setTemplate = this.setTemplate.bind(this)
-		this.setOneStroke = this.setOneStroke.bind(this)
-		this.setShowTemplate = this.setShowTemplate.bind(this)
-		this.setLastScore = this.setLastScore.bind(this)
-		this.resetCanvas = this.resetCanvas.bind(this)
-		this.mouseDownListener = this.mouseDownListener.bind(this)
-		this.mouseUpListener = this.mouseUpListener.bind(this)
-		this.mouseMoveListener = this.mouseMoveListener.bind(this)
-		this.evaluate = this.evaluate.bind(this)
-		this.clearHistory = this.clearHistory.bind(this)
-
 		//window.localStorage.clear()
 		let allScores = JSON.parse(window.localStorage.getItem('allScores'))
 		if(allScores){
@@ -56,14 +45,14 @@ class MainGrid extends React.Component{
 		this.state.allScores = allScores
 	}
 
-	componentDidMount(){
+	componentDidMount = () => {
 		let c = document.getElementById('drawingArea');
 		c.addEventListener('mousedown', this.mouseDownListener)
 		c.addEventListener('mouseup', this.mouseUpListener)
 		c.addEventListener('mousemove', this.mouseMoveListener)
 	}
 
-	mouseDownListener(evt){
+	mouseDownListener = (evt) => {
 		let c = document.getElementById('drawingArea')
 		this.mouseDown = true;
 		if(this.state.firstStroke || this.state.oneStroke){
@@ -72,14 +61,14 @@ class MainGrid extends React.Component{
 		this.setState({firstStroke: false, lastMousePos:getMousePos(c, evt)})
 	}
 
-	mouseUpListener(evt){
+	mouseUpListener = (evt) => {
 		this.mouseDown = false;  
 		if(this.state.oneStroke){
 			this.evaluate()
 			this.drawTemplate();
 		}
 	}
-	mouseMoveListener(evt){
+	mouseMoveListener = (evt) => {
 		if (this.mouseDown) {
 			let c = document.getElementById('drawingArea');
 			let ctx = c.getContext('2d');
@@ -95,13 +84,13 @@ class MainGrid extends React.Component{
 		}
 	}
 
-	evaluate(){
+	evaluate = () => {
 		this.setState({firstStroke: true})
 		this.drawTemplate();
 		this.setLastScore(this.score())
 	}
 
-	setLastScore(val){
+	setLastScore = (val) => {
 		let allScores = this.state.allScores.slice(0)
 		if(isFinite(val)){
 			allScores.unshift({
@@ -113,7 +102,7 @@ class MainGrid extends React.Component{
 		}
 		this.setState({lastScore: val, allScores: allScores})
 	}
-	setTemplate(val){
+	setTemplate = (val) => {
 		let templateImage = this.state.templateImage
 		let guideImage = this.state.guideImage
 		templateImage.src = '/templates/' + val.dirname + '/template.png';
@@ -132,30 +121,30 @@ class MainGrid extends React.Component{
 			this.resetCanvas()
 		})
 	}
-	setOneStroke(val){
+	setOneStroke = (val) => {
 		this.setState({oneStroke: val})
 		this.resetCanvas()
 	}
-	setShowTemplate(val){
+	setShowTemplate = (val) => {
 		this.setState({showTemplate: val})
 		this.resetCanvas()
 	}
-	clearHistory(){
+	clearHistory = () => {
 		window.localStorage.setItem('allScores', JSON.stringify([]))
 		this.setState({allScores: []})
 	}
 
-	resetCanvas(){
+	resetCanvas = () => {
 		this.setState({firstStroke: true})
 		this.clearCanvas()
 		this.drawGuide()
 	}
-	clearCanvas(){
+	clearCanvas = () => {
 		let c = document.getElementById('drawingArea')
 		let ctx = c.getContext('2d')
 		ctx.clearRect(0, 0, c.width, c.height);
 	}
-	drawGuide(){
+	drawGuide = () => {
 		let c = document.getElementById('drawingArea')
 		let ctx = c.getContext('2d')
 		ctx.drawImage(this.state.guideImage, 0, 0);
@@ -163,12 +152,12 @@ class MainGrid extends React.Component{
 			this.drawTemplate()
 		}
 	}
-	drawTemplate(){
+	drawTemplate = () => {
 		let ctx = document.getElementById('drawingArea').getContext('2d')
 		ctx.drawImage(this.state.templateImage, 0, 0);
 	}
 
-	score(){
+	score = () => {
 		let canvas = document.getElementById('drawingArea')
 		let ctx = canvas.getContext('2d')
 
@@ -225,7 +214,7 @@ class MainGrid extends React.Component{
 		return(tloss/templatePositions.length + dloss/templatePositions.length);
 	}
 
-	render(){
+	render = () => {
 		return(
 			<Container fluid={true}>
 				<Row>
