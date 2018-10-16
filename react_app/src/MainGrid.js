@@ -69,10 +69,7 @@ class MainGrid extends React.Component{
 		if(this.state.firstStroke || this.state.oneStroke){
 			this.resetCanvas()
 		}
-		let newState = Object.assign({}, this.state)
-		newState.firstStroke = false
-		newState.lastMousePos = getMousePos(c, evt);
-		this.setState(newState)
+		this.setState({firstStroke: false, lastMousePos:getMousePos(c, evt)})
 	}
 
 	mouseUpListener(evt){
@@ -94,73 +91,64 @@ class MainGrid extends React.Component{
 			ctx.strokeStyle = '#009900';
 			ctx.stroke();
 
-			let newState = Object.assign({}, this.state)
-			newState.lastMousePos = mousePos;
-			this.setState(newState)
+			this.setState({lastMousePos: mousePos})
 		}
 	}
 
 	evaluate(){
-		let newState = Object.assign({}, this.state)
-		newState.firstStroke = true
-		this.setState(newState, ()=>{
-			this.drawTemplate();
-			this.setLastScore(this.score())
-		})
+		this.setState({firstStroke: true})
+		this.drawTemplate();
+		this.setLastScore(this.score())
 	}
 
 	setLastScore(val){
-		let newState = Object.assign({}, this.state)
-		newState.lastScore = val
+		let allScores = this.state.allScores.slice(0)
 		if(isFinite(val)){
-			newState.allScores.unshift({
+			allScores.unshift({
 				'score':val
 				, 'date': Date.now()
 				, 'template': this.state.curTemplate.dirname
 			})
-			window.localStorage.setItem('allScores', JSON.stringify(newState.allScores))
+			window.localStorage.setItem('allScores', JSON.stringify(allScores))
 		}
-		this.setState(newState)
+		this.setState({lastScore: val, allScores: allScores})
 	}
 	setTemplate(val){
-		let newState = Object.assign({}, this.state)
-		newState.curTemplate = val
-		newState.templateImage.src = '/templates/' + val.dirname + '/template.png';
-		newState.guideImage.src = '/templates/' + val.dirname + '/guide.png';
+		let templateImage = this.state.templateImage
+		let guideImage = this.state.guideImage
+		templateImage.src = '/templates/' + val.dirname + '/template.png';
+		guideImage.src = '/templates/' + val.dirname + '/guide.png';
 		const guideImageLoaded = new Promise(function(resolve, reject){
-			newState.guideImage.onload = ()=>resolve()
+			guideImage.onload = ()=>resolve()
 		});
 		const templateImageLoaded = new Promise(function(resolve, reject){
-			newState.templateImage.onload = ()=>resolve()
+			templateImage.onload = ()=>resolve()
 		});
 		Promise.all([guideImageLoaded, templateImageLoaded]).then(()=>{
-			this.setState(newState, this.resetCanvas)
+			this.setState({curTemplate: val
+				, templateImage: templateImage
+				, guideImage: guideImage
+			})
+			this.resetCanvas()
 		})
 	}
 	setOneStroke(val){
-		let newState = Object.assign({}, this.state)
-		newState['oneStroke'] = val
-		this.setState(newState, this.resetCanvas)
+		this.setState({oneStroke: val})
+		this.resetCanvas()
 	}
 	setShowTemplate(val){
-		let newState = Object.assign({}, this.state)
-		newState['showTemplate'] = val
-		this.setState(newState, this.resetCanvas)
+		this.setState({showTemplate: val})
+		this.resetCanvas()
 	}
 	clearHistory(){
 		window.localStorage.setItem('allScores', JSON.stringify([]))
-		let newState = Object.assign({}, this.state)
-		newState.allScores = []
-		this.setState(newState)
+		this.setState({allScores: []})
 	}
 
 	resetCanvas(){
-		let newState = Object.assign({}, this.state)
-		newState.firstStroke = true
-		this.setState(newState, ()=>{
-			this.clearCanvas()
-			this.drawGuide()
-		})
+		this.setState({firstStroke: true})
+		this.clearCanvas()
+		this.drawGuide()
 	}
 	clearCanvas(){
 		let c = document.getElementById('drawingArea')
