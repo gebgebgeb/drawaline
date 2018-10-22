@@ -1,5 +1,6 @@
 *.swp
 *.png
+start.sh
 
 # Logs
 logs
