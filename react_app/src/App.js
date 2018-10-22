@@ -18,7 +18,6 @@ const theme = createMuiTheme({
 
 class App extends Component {
   render() {
-		const {classes} = this.props
     return (
 			<CssBaseline>
 				<MuiThemeProvider theme={theme}>

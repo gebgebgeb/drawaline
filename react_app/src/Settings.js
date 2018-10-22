@@ -10,7 +10,6 @@ import ListItem from '@material-ui/core/ListItem';
 
 class Settings extends Component{
 	render(){
-		const { classes } = this.props;
 		return(
       <List>
 				<ListItem>
