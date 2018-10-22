@@ -35,6 +35,15 @@ const styles = theme => ({
     paddingLeft: theme.spacing.unit * 4,
   },
   toolbar: theme.mixins.toolbar,
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 200,
+  },
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
 });
 
 export default styles;

@@ -12,13 +12,14 @@ function NavBar(props) {
   return (
 		<AppBar position="absolute" color="default" className={classes.appBar}>
 			<Toolbar>
-				<Typography variant="h6" color="inherit" noWrap>
+				<Typography variant="h6" color="inherit" style={{flex:1}} noWrap>
 					Tracing Trainer
 				</Typography>
 			</Toolbar>
 		</AppBar>
   );
 }
+
 
 NavBar.propTypes = {
   classes: PropTypes.object.isRequired,
