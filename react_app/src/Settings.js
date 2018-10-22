@@ -1,38 +1,76 @@
 import React, {Component} from 'react'
-import {Button, ButtonGroup} from 'reactstrap'
+
+import styles from './styles'
+
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
 
 class Settings extends Component{
 	render(){
+		const { classes } = this.props;
 		return(
-      <div>
-				<ButtonGroup>
-					<Button color="primary" disabled={this.props.oneStroke} 
+      <List>
+				<ListItem>
+					<Button 
+						variant='outlined'
+						color="primary" 
+						disabled={this.props.oneStroke} 
 						onClick={this.props.evaluate}
-					>Evaluate
+					>
+						Evaluate
 					</Button>
-					<Button color="primary" 
+					<Button 
+						variant='outlined'
+						color="primary" 
 						onClick={this.props.resetCanvas}
-					>Reset
+					>
+						Reset
 					</Button>
-				</ButtonGroup>
-				<div>
-					<h5>Auto evaluate after one stroke?</h5>
-					<ButtonGroup>
-						<Button color="primary" onClick={() => this.props.setOneStroke(true)} active={this.props.oneStroke}>Yes</Button>
-						<Button color="primary" onClick={() => this.props.setOneStroke(false)} active={!this.props.oneStroke}>No</Button>
-					</ButtonGroup>
-				</div>
-				<div>
-					<h5>Show Template?</h5>
-					<ButtonGroup>
-						<Button color="primary" onClick={() => this.props.setShowTemplate(true)} active={this.props.showTemplate}>Yes</Button>
-						<Button color="primary" onClick={() => this.props.setShowTemplate(false)} active={!this.props.showTemplate}>No</Button>
-					</ButtonGroup>
-				</div>
-
-			</div>
+				</ListItem>
+				<ListItem>
+					<Typography variant='h6'>Auto evaluate after one stroke?</Typography>
+				</ListItem>
+				<ListItem>
+					<Button 
+						variant={ this.props.oneStroke ? 'contained' : 'outlined' }
+						color="primary" 
+						onClick={() => this.props.setOneStroke(true)} 
+					>
+						Yes
+					</Button>
+					<Button 
+						variant={ this.props.oneStroke ? 'outlined' : 'contained' }
+						color="primary" 
+						onClick={() => this.props.setOneStroke(false)} 
+					>
+						No
+					</Button>
+				</ListItem>
+				<ListItem>
+					<Typography variant='h6'>Show Template?</Typography>
+				</ListItem>
+				<ListItem>
+					<Button 
+						variant={ this.props.showTemplate ? 'contained' : 'outlined' }
+						color="primary" 
+						onClick={() => this.props.setShowTemplate(true)} 
+					>
+						Yes
+					</Button>
+					<Button 
+						variant={ this.props.showTemplate ? 'outlined' : 'contained' }
+						color="primary" 
+						onClick={() => this.props.setShowTemplate(false)} 
+					>
+						No
+					</Button>
+				</ListItem>
+			</List>
 		)
 	}
 }
 
-export default Settings;
+export default withStyles(styles)(Settings);

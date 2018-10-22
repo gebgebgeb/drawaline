@@ -1,8 +1,21 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-import {Container, Row, Col, Button} from 'reactstrap'
 import TemplateList from './TemplateList'
 import Settings from './Settings'
+import NavBar from './NavBar'
+import styles from './styles'
+
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import Drawer from '@material-ui/core/Drawer';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import Paper from '@material-ui/core/Paper';
+import Card from '@material-ui/core/Card';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
 
 
 function distance(pos1, pos2){
@@ -117,17 +130,14 @@ class MainGrid extends React.Component{
 			this.setState({curTemplate: val
 				, templateImage: templateImage
 				, guideImage: guideImage
-			})
-			this.resetCanvas()
+			}, this.resetCanvas)
 		})
 	}
 	setOneStroke = (val) => {
-		this.setState({oneStroke: val})
-		this.resetCanvas()
+		this.setState({oneStroke: val}, this.resetCanvas)
 	}
 	setShowTemplate = (val) => {
-		this.setState({showTemplate: val})
-		this.resetCanvas()
+		this.setState({showTemplate: val}, this.resetCanvas)
 	}
 	clearHistory = () => {
 		window.localStorage.setItem('allScores', JSON.stringify([]))
@@ -215,46 +225,54 @@ class MainGrid extends React.Component{
 	}
 
 	render = () => {
+		const {classes} = this.props;
 		return(
-			<Container fluid={true}>
-				<Row>
-					<Col xs='2'>
-						<TemplateList handleClick={this.setTemplate}/>
-					</Col>
-					<Col xs='8'>
-						<Row>
-							<Col>
+			<div className={classes.root}>
+				<NavBar/>
+				<Drawer 
+					variant="permanent"
+					anchor="left"
+					classes={{paper:classes.leftDrawerPaper}}
+				>
+					<div className={classes.toolbar} />
+					<TemplateList 
+						setTemplate={this.setTemplate}
+						curTemplate={this.state.curTemplate}
+					/>
+				</Drawer>
+				<main className={classes.content}>
+					<div className={classes.toolbar} />
+						<Card>
+							<CardContent>
 								<Canvas />
-							</Col>
-						</Row>
-						<Row>
-							<Col>
 								<Description template={this.state.curTemplate}/>
-							</Col>
-						</Row>
-						<Row>
-							<Col>
-								<Settings
-									oneStroke={this.state.oneStroke}
-									showTemplate={this.state.showTemplate}
-									setOneStroke={this.setOneStroke}
-									setShowTemplate={this.setShowTemplate}
-									evaluate={this.evaluate}
-									resetCanvas={this.resetCanvas}
-								/>
-							</Col>
-						</Row>
-					</Col>
-					<Col xs='2'>
-						<Stats 
-							lastScore={this.state.lastScore}
-							allScores={this.state.allScores}
-							curTemplate={this.state.curTemplate}
-							clearHistory={this.clearHistory}
-						/>
-					</Col>
-				</Row>
-			</Container>
+							</CardContent>
+						</Card>
+				</main>
+				<Drawer 
+					variant="permanent"
+					anchor="right"
+					classes={{paper:classes.rightDrawerPaper}}
+				>
+					<div className={classes.toolbar} />
+					<Divider/>
+					<Settings
+						oneStroke={this.state.oneStroke}
+						showTemplate={this.state.showTemplate}
+						setOneStroke={this.setOneStroke}
+						setShowTemplate={this.setShowTemplate}
+						evaluate={this.evaluate}
+						resetCanvas={this.resetCanvas}
+					/>
+					<Divider/>
+					<Stats 
+						lastScore={this.state.lastScore}
+						allScores={this.state.allScores}
+						curTemplate={this.state.curTemplate}
+						clearHistory={this.clearHistory}
+					/>
+				</Drawer>
+			</div>
 		)
 	}
 }
@@ -277,10 +295,13 @@ function Stats(props){
 	}
 	return(
 		<div>
-			<h4>Score: {props.lastScore.toFixed(2)}</h4>
+			<Typography variant="h6">
+				Score: {props.lastScore.toFixed(2)}
+			</Typography>
 			<Button color="primary"
 				onClick={props.clearHistory}
-			>Clear History
+			>
+				Clear History
 			</Button>
 			<h4>Previous scores:</h4>
 			<ul>
@@ -307,12 +328,14 @@ function Description(props){
 		description = props.template.instructions
 	}
 	return(
-		<div className='text-center'>
-			<p className='lead'>
-				{description}
-			</p>
-		</div>
+		<Typography align='center' variant='h5'>
+			{description}
+		</Typography>
 	)
 }
 
-export default MainGrid;
+MainGrid.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(MainGrid);
