@@ -12,7 +12,7 @@ BG_COLOR = (255, 255, 255, 0)
 
 [(100, HEIGHT/2), (WIDTH-100, HEIGHT/2)]
 
-DATA_DIR = 'public/templates'
+DATA_DIR = '../public/templates'
 
 def draw_point(draw, location, radius, color):
     bounding_rectangle = (location[0]-radius, location[1]-radius
@@ -45,6 +45,7 @@ def make_line_template(title, endpoint1, endpoint2):
         json.dump({'instructions': 'Draw the line between the two points'
             , 'title': title
             , 'subcollection': 'Lines'
+            , 'onestroke': True
             }, f)
 
 center = np.array([WIDTH/2, HEIGHT/2])
@@ -67,4 +68,8 @@ draw.rectangle([(100, 100), (WIDTH-100, HEIGHT-100)]
 im.save(os.path.join(DATA_DIR, 'circle1/guide.png'), "PNG")
 
 with open(os.path.join(DATA_DIR, 'circle1/metadata.json'), 'w') as f:
-    json.dump({'instructions': 'Draw the circle bounded by the square'}, f)
+    json.dump({'instructions': 'Draw the circle bounded by the square'
+            , 'title': 'Circle 1'
+            , 'subcollection': 'Circles'
+            , 'onestroke': True
+            }, f)
