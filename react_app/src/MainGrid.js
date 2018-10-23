@@ -127,6 +127,7 @@ class MainGrid extends React.Component{
 			this.setState({curTemplate: val
 				, templateImage: templateImage
 				, guideImage: guideImage
+				, oneStroke: val.onestroke
 			}, this.resetCanvas)
 		})
 	}
