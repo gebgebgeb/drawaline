@@ -14,7 +14,7 @@ class Settings extends Component{
       <List>
 				<ListItem>
 					<Button 
-						variant='outlined'
+						variant='contained'
 						color="primary" 
 						disabled={this.props.oneStroke} 
 						onClick={this.props.evaluate}
@@ -22,7 +22,7 @@ class Settings extends Component{
 						Evaluate
 					</Button>
 					<Button 
-						variant='outlined'
+						variant='contained'
 						color="primary" 
 						onClick={this.props.resetCanvas}
 					>
@@ -35,14 +35,14 @@ class Settings extends Component{
 				<ListItem>
 					<Button 
 						variant={ this.props.oneStroke ? 'contained' : 'outlined' }
-						color="primary" 
+						color="default" 
 						onClick={() => this.props.setOneStroke(true)} 
 					>
 						Yes
 					</Button>
 					<Button 
 						variant={ this.props.oneStroke ? 'outlined' : 'contained' }
-						color="primary" 
+						color="default" 
 						onClick={() => this.props.setOneStroke(false)} 
 					>
 						No
@@ -54,14 +54,14 @@ class Settings extends Component{
 				<ListItem>
 					<Button 
 						variant={ this.props.showTemplate ? 'contained' : 'outlined' }
-						color="primary" 
+						color="default" 
 						onClick={() => this.props.setShowTemplate(true)} 
 					>
 						Yes
 					</Button>
 					<Button 
 						variant={ this.props.showTemplate ? 'outlined' : 'contained' }
-						color="primary" 
+						color="default" 
 						onClick={() => this.props.setShowTemplate(false)} 
 					>
 						No
