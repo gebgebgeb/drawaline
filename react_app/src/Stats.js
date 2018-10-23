@@ -91,9 +91,18 @@ function Stats(props){
 				{statItems}
 				<ListItem>
 					<Button color="primary"
-						onClick={props.clearHistory}
+						variant='outlined'
+						onClick={props.clearAllHistory}
 					>
-						Clear History
+						Clear All History
+					</Button>
+				</ListItem>
+				<ListItem>
+					<Button color="primary"
+						variant='outlined'
+						onClick={props.clearThisHistory}
+					>
+						Clear Template History
 					</Button>
 				</ListItem>
 

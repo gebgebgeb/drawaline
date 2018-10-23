@@ -137,9 +137,15 @@ class MainGrid extends React.Component{
 	setShowTemplate = (val) => {
 		this.setState({showTemplate: val}, this.resetCanvas)
 	}
-	clearHistory = () => {
+	clearAllHistory = () => {
 		window.localStorage.setItem('allScores', JSON.stringify([]))
 		this.setState({allScores: []})
+	}
+	clearThisHistory = () => {
+		let oldScores = this.state.allScores
+		let newScores = oldScores.filter(score => score.template !== this.state.curTemplate.dirname)
+		window.localStorage.setItem('allScores', JSON.stringify(newScores))
+		this.setState({allScores: newScores})
 	}
 
 	resetCanvas = () => {
@@ -267,7 +273,8 @@ class MainGrid extends React.Component{
 						lastScore={this.state.lastScore}
 						allScores={this.state.allScores}
 						curTemplate={this.state.curTemplate}
-						clearHistory={this.clearHistory}
+						clearAllHistory={this.clearAllHistory}
+						clearThisHistory={this.clearThisHistory}
 					/>
 				</Drawer>
 			</div>
