@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "a app based on koa-base-boilerplate",
   "main": "app.js",
+	"engines":{
+		"node": "10.11.0"
+	},
   "dependencies": {
     "@koa/cors": "^2.2.2",
     "babel-core": "^6.23.1",
