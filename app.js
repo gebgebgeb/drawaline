@@ -1,3 +1,4 @@
+const PORT = process.env.PORT || 9999;
 const Koa = require('koa')
 const cors = require('@koa/cors')
 const bodyparser = require('koa-bodyparser')
@@ -18,7 +19,9 @@ app
 .use(bodyparser())
 //.use(passport.initialize())
 //.use(passport.session())
+.use(staticRouter('build'))
 .use(staticRouter('public'))
 .use(indexRouter.routes())
 
-app.listen(9999)
+app.listen(PORT)
+console.log('Listening on port ' + PORT)
