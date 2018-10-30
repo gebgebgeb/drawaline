@@ -2,7 +2,6 @@
   "name": "drawing_react",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:9999",
   "dependencies": {
     "@koa/cors": "^2.2.2",
     "@material-ui/core": "^3.2.2",
