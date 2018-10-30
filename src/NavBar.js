@@ -13,7 +13,7 @@ function NavBar(props) {
 		<AppBar position="absolute" color="default" className={classes.appBar}>
 			<Toolbar>
 				<Typography variant="h6" color="inherit" style={{flex:1}} noWrap>
-					Tracing Trainer
+					Draw a Line
 				</Typography>
 			</Toolbar>
 		</AppBar>
