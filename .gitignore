@@ -1,5 +1,4 @@
 *.swp
-*.png
 start.sh
 data/
 build/
