@@ -1,9 +1,20 @@
 from pymongo import MongoClient
 import os
 import json
+import secrets
 
+# local
 client = MongoClient('localhost', 27017)
 db = client.drawing_dev
+
+# remote
+'''
+client = MongoClient(
+        'mongodb://%s:%s@ds147073.mlab.com' % (secrets.DBUSER, secrets.DBPASSWORD)
+        , 47073)
+db = client.drawaline
+'''
+
 templates = db.templates
 
 TEMPLATES_DIR = '../public/templates'

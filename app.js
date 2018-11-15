@@ -3,11 +3,7 @@ const Koa = require('koa')
 const cors = require('@koa/cors')
 const bodyparser = require('koa-bodyparser')
 const staticRouter = require('koa-static')
-//const passport = require('koa-passport')
-//const session = require('koa-session')
 const helmet = require('koa-helmet')
-
-const path = require('path')
 
 const indexRouter = require('./routers/index')
 
@@ -17,10 +13,7 @@ app
 .use(helmet())
 .use(cors())
 .use(bodyparser())
-//.use(passport.initialize())
-//.use(passport.session())
-.use(staticRouter('build'))
-.use(staticRouter('public'))
+.use(staticRouter(__dirname + '/build'))
 .use(indexRouter.routes())
 
 app.listen(PORT)

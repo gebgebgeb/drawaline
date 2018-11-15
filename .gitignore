@@ -1,3 +1,4 @@
+secrets.*
 *.swp
 start.sh
 data/
