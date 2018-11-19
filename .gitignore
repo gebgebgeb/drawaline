@@ -2,7 +2,6 @@ secrets.*
 *.swp
 start.sh
 data/
-build/
 
 # Logs
 logs
