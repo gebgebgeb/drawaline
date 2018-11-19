@@ -1,10 +1,11 @@
 const Router = require('koa-router')
-
 const axios = require('axios')
+const url = require('url')
 
 const PORT = process.env.PORT || 9999;
-const URL = process.env.HEROKU_URL || 'http://localhost'
-const AXIOS_BASE_URL = URL + ':' + PORT
+const MY_URL = new URL(process.env.PRODUCTION_URL || 'http://localhost/')
+MY_URL.port = PORT
+const AXIOS_BASE_URL = MY_URL.origin
 
 const router = new Router()
 
